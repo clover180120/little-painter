@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小畫家</title>
+  <link rel="stylesheet" href="./index.css"></link>
+</head>
+<body>
+  <div id="root">
+    <nav class="header">
+      <span class="header-item">File</span>
+      <span class="header-item">Edit</span>
+    </nav>
+    <div class="main-container">
+      <div class="toolbar">
+        <div class="tool-item" id="select"></div>
+        <div class="tool-item" id="association"></div>
+        <div class="tool-item" id="generalization"></div>
+        <div class="tool-item" id="composition" ></div>
+        <div class="tool-item" id="rectangle" ></div>
+        <div class="tool-item" id="ellipse" ></div>
+      </div>
+      <div class="canvas-box">
+        <canvas id="canvas" width="1400" height="700"></canvas>
+        <p id="clear">Clear</p>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./dist/index.js"></script>
+</body>
+</html>
