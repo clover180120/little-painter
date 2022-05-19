@@ -95,8 +95,6 @@ const ellipseEvents: EllipseEvents = {
       centerX: (canvas.state.startX + width) / 2,
       centerY: (canvas.state.startY + height) / 2,
     });
-    console.log(canvas.state.ellipseList);
-    // canvas.state.ellipseList.forEach(e => console.log(e.centerX, e.centerY))
   },
   onMousemove: (e, canvas) => {
     if (!canvas.state.isDrawing) return;
