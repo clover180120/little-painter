@@ -5,16 +5,18 @@ let canvas = new Canvas(document.getElementById('canvas') as HTMLCanvasElement);
 const rectBtn = document.getElementById('rectangle')
 rectBtn?.addEventListener('click', () => {
   rectBtn.classList.add('active');
-  if (canvas.state.currentToolkit) {
-    canvas.unregisterEventListeners(canvas.state.currentToolkit);
+  if (canvas.state.currentToolkit !== Toolkit.RECTANGLE) {
+    canvas.unregisterEventListeners(canvas.state.currentToolkit, canvas);
   }
-  canvas.registerEventListeners(Toolkit.RECTANGLE);
+  canvas.registerEventListeners(Toolkit.RECTANGLE, canvas);
+  canvas.state.currentToolkit = Toolkit.RECTANGLE;
 })
 const ellipseBtn = document.getElementById('ellipse')
 ellipseBtn?.addEventListener('click', () => {
   ellipseBtn.classList.add('active');
-  if (canvas.state.currentToolkit) {
-    canvas.unregisterEventListeners(canvas.state.currentToolkit);
+  if (canvas.state.currentToolkit !== Toolkit.ELLIPSE) {
+    canvas.unregisterEventListeners(canvas.state.currentToolkit, canvas);
   }
-  canvas.registerEventListeners(Toolkit.ELLIPSE);
+  canvas.registerEventListeners(Toolkit.ELLIPSE, canvas);
+  canvas.state.currentToolkit = Toolkit.ELLIPSE;
 })

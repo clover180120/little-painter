@@ -1,19 +1,15 @@
 import { Toolkit } from "./constant";
 import { rectangleEvents, ellipseEvents } from "./events";
 
-type Rect = {
+export type Rect = {
   startX: number,
-  endX: number,
   startY: number,
-  endY: number,
   width: number,
   height: number,
 }
-type Ellipse = {
+export type Ellipse = {
   startX: number,
-  endX: number,
   startY: number,
-  endY: number,
   width: number,
   height: number,
   centerX: number,
@@ -23,8 +19,6 @@ type State = {
   startX: number,
   startY: number,
   isDrawing: boolean,
-  endX: number,
-  endY: number,
   rectList: Rect[],
   ellipseList: Ellipse[],
   currentToolkit: Toolkit | undefined
@@ -33,8 +27,8 @@ type State = {
 export interface ICanvas {
   canvas: HTMLCanvasElement;
   state: State;
-  registerEventListeners: (toolkit: Toolkit) => void;
-  unregisterEventListeners: (toolkit: Toolkit) => void;
+  registerEventListeners: (toolkit: Toolkit, canvas: ICanvas) => void;
+  unregisterEventListeners: (toolkit: Toolkit | undefined, canvas: ICanvas) => void;
 }
 
 class Canvas implements ICanvas {
@@ -47,27 +41,34 @@ class Canvas implements ICanvas {
       startX: 0,
       startY: 0,
       isDrawing: false,
-      endX: 0,
-      endY: 0,
       rectList: [],
       ellipseList: [],
       currentToolkit: undefined,
     };
   }
 
-  registerEventListeners(toolkit: Toolkit) {
+  private rectangleOnClick = (e: MouseEvent) => { rectangleEvents.onClick(e, this) };
+  private rectangleOnMousedown = (e: MouseEvent) => { rectangleEvents.onMousedown(e, this) };
+  private rectangleOnMouseup = (e: MouseEvent) => { rectangleEvents.onMouseup(e, this) };
+  private rectangleOnMousemove = (e: MouseEvent) => { rectangleEvents.onMousemove(e, this) };
+  private ellipseOnClick = (e: MouseEvent) => { ellipseEvents.onClick(e, this) };
+  private ellipseOnMousedown = (e: MouseEvent) => { ellipseEvents.onMousedown(e, this) };
+  private ellipseOnMouseup = (e: MouseEvent) => { ellipseEvents.onMouseup(e, this) };
+  private ellipseOnMousemove = (e: MouseEvent) => { ellipseEvents.onMousemove(e, this) };
+  
+  registerEventListeners(toolkit: Toolkit, canvas: ICanvas) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
-        this.canvas.addEventListener('click', (e) => rectangleEvents.onClick(e, this))
-        this.canvas.addEventListener('mousedown', (e) => rectangleEvents.onMousedown(e, this))
-        this.canvas.addEventListener('mouseup', (e) => rectangleEvents.onMouseup(e, this))
-        this.canvas.addEventListener('mousemove', (e) => rectangleEvents.onMousemove(e, this))
+        this.canvas.addEventListener('click', this.rectangleOnClick)
+        this.canvas.addEventListener('mousedown', this.rectangleOnMousedown)
+        this.canvas.addEventListener('mouseup', this.rectangleOnMouseup)
+        this.canvas.addEventListener('mousemove', this.rectangleOnMousemove)
         break;
       case Toolkit.ELLIPSE:
-        this.canvas.addEventListener('click', (e) => ellipseEvents.onClick(e, this))
-        this.canvas.addEventListener('mousedown', (e) => ellipseEvents.onMousedown(e, this))
-        this.canvas.addEventListener('mouseup', (e) => ellipseEvents.onMouseup(e, this))
-        this.canvas.addEventListener('mousemove', (e) => ellipseEvents.onMousemove(e, this))
+        this.canvas.addEventListener('click', this.ellipseOnClick)
+        this.canvas.addEventListener('mousedown', this.ellipseOnMousedown)
+        this.canvas.addEventListener('mouseup', this.ellipseOnMouseup)
+        this.canvas.addEventListener('mousemove', this.ellipseOnMousemove)
         break;
     
       default:
@@ -75,19 +76,19 @@ class Canvas implements ICanvas {
     }
   };
 
-  unregisterEventListeners(toolkit: Toolkit) {
+  unregisterEventListeners(toolkit: Toolkit | undefined, canvas: ICanvas) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
-        this.canvas.removeEventListener('click', (e) => rectangleEvents.onClick(e, this))
-        this.canvas.removeEventListener('mousedown', (e) => rectangleEvents.onMousedown(e, this))
-        this.canvas.removeEventListener('mouseup', (e) => rectangleEvents.onMouseup(e, this))
-        this.canvas.removeEventListener('mousemove', (e) => rectangleEvents.onMousemove(e, this))
+        this.canvas.removeEventListener('click', this.rectangleOnClick)
+        this.canvas.removeEventListener('mousedown', this.rectangleOnMousedown)
+        this.canvas.removeEventListener('mouseup', this.rectangleOnMouseup)
+        this.canvas.removeEventListener('mousemove', this.rectangleOnMousemove)
         break;
       case Toolkit.ELLIPSE:
-        this.canvas.removeEventListener('click', (e) => ellipseEvents.onClick(e, this))
-        this.canvas.removeEventListener('mousedown', (e) => ellipseEvents.onMousedown(e, this))
-        this.canvas.removeEventListener('mouseup', (e) => ellipseEvents.onMouseup(e, this))
-        this.canvas.removeEventListener('mousemove', (e) => ellipseEvents.onMousemove(e, this))
+        this.canvas.removeEventListener('click', this.ellipseOnClick)
+        this.canvas.removeEventListener('mousedown', this.ellipseOnMousedown)
+        this.canvas.removeEventListener('mouseup', this.ellipseOnMouseup)
+        this.canvas.removeEventListener('mousemove', this.ellipseOnMousemove)
         break;
     
       default:
