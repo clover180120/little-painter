@@ -22,7 +22,7 @@ html, body {
   background-color: #bfbfbf;
   box-shadow: 3px 3px 4px 1px #666;
 }
-.tool-item {
+.toolbar-item {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,25 +38,25 @@ html, body {
   background-position: center;
   background-size: 75% 75%;
 }
-.tool-item.active {
+.toolbar-item.active {
   background-color: #747171;
 }
-.tool-item#rectangle {
+.toolbar-item#rectangle {
   background-image: url('./src/icons/rectangle.svg');
 }
-.tool-item#select {
+.toolbar-item#select {
   background-image: url('./src/icons/cursor.svg');
 }
-.tool-item#ellipse {
+.toolbar-item#ellipse {
   background-image: url('./src/icons/ellipse.svg');
 }
-.tool-item#association {
+.toolbar-item#association {
   background-image: url('./src/icons/association.svg');
 }
-.tool-item#composition {
+.toolbar-item#composition {
   background-image: url('./src/icons/composition.svg');
 }
-.tool-item#generalization {
+.toolbar-item#generalization {
   background-image: url('./src/icons/generalization.svg');
 }
 .canvas-box {
