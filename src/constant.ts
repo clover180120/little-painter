@@ -3,4 +3,4 @@ enum Toolkit {
   ELLIPSE
 }
 
-export { Toolkit }
+export { Toolkit };

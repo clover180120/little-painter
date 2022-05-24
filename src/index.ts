@@ -2,7 +2,6 @@ import { Toolkit } from "./constant";
 import Canvas from "./canvas";
 
 let canvas = new Canvas(document.getElementById('canvas') as HTMLCanvasElement);
-
 const nodes = [
   {
     node: document.getElementById('rectangle'),
@@ -13,19 +12,19 @@ const nodes = [
         }
         canvas.registerEventListeners(Toolkit.RECTANGLE, canvas);
         canvas.state.currentToolkit = Toolkit.RECTANGLE;
-      }
-    }
+      },
+    },
   },
   {
     node: document.querySelector('.toolbar'),
     listeners: {
       click: (e: Event) => {
         const toolbarItems = document.querySelectorAll('.toolbar-item');
-        toolbarItems.forEach(i => i.classList.remove('active'));
+        toolbarItems.forEach((i) => i.classList.remove('active'));
         const target = e.target as Element;
         target.classList.add('active');
-      }
-    }
+      },
+    },
   },
   {
     node: document.getElementById('ellipse'),
@@ -43,6 +42,6 @@ const nodes = [
 
 nodes.forEach((nodeObj) => {
   Object.entries(nodeObj.listeners).forEach(([key, value]) => {
-    nodeObj.node?.addEventListener(key, value)
-  })
-})
+    nodeObj.node?.addEventListener(key, value);
+  });
+});

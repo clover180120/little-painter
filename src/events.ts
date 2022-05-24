@@ -1,36 +1,56 @@
-import { Ellipse, ICanvas, Rect } from './canvas';
+import { Ellipse, ICanvas, Rect } from "./canvas";
+import {
+  calcRectPorts,
+  calcEllipsePorts,
+  findSelection,
+  disableAllSelection,
+} from "./utils";
 
 type GlobalEvents = {
-  drawAll: (rectList: Rect[], ellipseList: Ellipse[], ctx: CanvasRenderingContext2D | null) => void;
-}
+  drawAll: (
+    rectList: Rect[],
+    ellipseList: Ellipse[],
+    ctx: CanvasRenderingContext2D | null
+  ) => void;
 type RectangleEvents = {
   onClick: (e: MouseEvent, canvas: ICanvas) => void;
   onMousedown: (e: MouseEvent, canvas: ICanvas) => void;
   onMouseup: (e: MouseEvent, canvas: ICanvas) => void;
   onMousemove: (e: MouseEvent, canvas: ICanvas) => void;
-}
+};
 
 type EllipseEvents = {
   onClick: (e: MouseEvent, canvas: ICanvas) => void;
   onMousedown: (e: MouseEvent, canvas: ICanvas) => void;
   onMouseup: (e: MouseEvent, canvas: ICanvas) => void;
   onMousemove: (e: MouseEvent, canvas: ICanvas) => void;
+};
 }
 
 const globalEvents: GlobalEvents = {
   drawAll: (rectList, ellipseList, ctx) => {
-    rectList.forEach(rect => {
+    rectList.forEach((rect) => {
       ctx?.beginPath();
       ctx?.rect(rect.startX, rect.startY, rect.width, rect.height);
       ctx?.stroke();
       ctx?.save();
-    })
-    ellipseList.forEach(ellipse => {
+    });
+    ellipseList.forEach((ellipse) => {
       ctx?.beginPath();
-      ctx?.ellipse(ellipse.centerX, ellipse.centerY, ellipse.width, ellipse.height, 0, 0, 2 * Math.PI, false);
+      ctx?.ellipse(
+        ellipse.centerX,
+        ellipse.centerY,
+        ellipse.width,
+        ellipse.height,
+        0,
+        0,
+        2 * Math.PI,
+        false
+      );
       ctx?.stroke();
       ctx?.save();
-    })
+    });
+  },
   }
 }
 
@@ -131,4 +151,4 @@ const ellipseEvents: EllipseEvents = {
   },
 }
 
-export { rectangleEvents, ellipseEvents }
+export { rectangleEvents, ellipseEvents, selectedEvents };

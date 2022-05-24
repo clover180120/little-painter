@@ -22,6 +22,7 @@
   },
   "homepage": "https://gitlab.com/kklab-com/vd/0-1-lab/oop-solid-workshop#readme",
   "devDependencies": {
+    "prettier": "^2.6.2",
     "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
     "webpack": "^5.72.1",
