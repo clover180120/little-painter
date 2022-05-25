@@ -5,6 +5,8 @@ import { EllipseSelection, RectSelection } from "./types";
 export type Rect = {
   startX: number;
   startY: number;
+  selectedPointX?: number;
+  selectedPointY?: number;
   width: number;
   height: number;
   selected: boolean;
@@ -13,6 +15,8 @@ export type Rect = {
 export type Ellipse = {
   startX: number;
   startY: number;
+  selectedPointX?: number;
+  selectedPointY?: number;
   width: number;
   height: number;
   centerX: number;
@@ -23,7 +27,10 @@ export type Ellipse = {
 type State = {
   startX: number;
   startY: number;
+  selectedPointX?: number;
+  selectedPointY?: number;
   isDrawing: boolean;
+  isDragging: boolean;
   rectList: Rect[];
   ellipseList: Ellipse[];
   currentToolkit: Toolkit | undefined;
@@ -48,7 +55,10 @@ class Canvas implements ICanvas {
     this.state = {
       startX: 0,
       startY: 0,
+      selectedPointX: 0,
+      selectedPointY: 0,
       isDrawing: false,
+      isDragging: false,
       rectList: [],
       ellipseList: [],
       currentToolkit: undefined,
@@ -80,6 +90,15 @@ class Canvas implements ICanvas {
     ellipseEvents.onMousemove(e, this);
   };
   private selectOnClick = (e: MouseEvent) => {
+    selectedEvents.onClick(e, this);
+  };
+  private selectOnMousemove = (e: MouseEvent) => {
+    selectedEvents.onMousemove(e, this);
+  };
+  private selectOnMouseup = (e: MouseEvent) => {
+    selectedEvents.onMouseup(e, this);
+  };
+  private selectOnMousedown = (e: MouseEvent) => {
     selectedEvents.onMousedown(e, this);
   };
 
@@ -99,6 +118,9 @@ class Canvas implements ICanvas {
         break;
       case Toolkit.SELECT:
         this.canvas.addEventListener('click', this.selectOnClick);
+        this.canvas.addEventListener('mousedown', this.selectOnMousedown);
+        this.canvas.addEventListener('mouseup', this.selectOnMouseup);
+        this.canvas.addEventListener('mousemove', this.selectOnMousemove);
         break;
 
       default:

@@ -19,7 +19,10 @@ type GlobalEvents = {
   ) => void;
 };
 type SelectedEvents = {
+  onClick: (e: MouseEvent, canvas: ICanvas) => void;
   onMousedown: (e: MouseEvent, canvas: ICanvas) => void;
+  onMousemove: (e: MouseEvent, canvas: ICanvas) => void;
+  onMouseup: (e: MouseEvent, canvas: ICanvas) => void;
 };
 type RectangleEvents = {
   onClick: (e: MouseEvent, canvas: ICanvas) => void;
@@ -36,7 +39,7 @@ type EllipseEvents = {
 };
 
 const selectedEvents: SelectedEvents = {
-  onMousedown: (e, canvas) => {
+  onClick: (e, canvas) => {
     const ctx = canvas.canvas.getContext('2d');
     const rect = canvas.canvas.getBoundingClientRect();
     const mouseX = e.pageX - rect.left;
@@ -58,6 +61,78 @@ const selectedEvents: SelectedEvents = {
       canvas.state.ellipseList,
       ctx
     );
+  },
+  onMousedown: (e, canvas) => {
+    const rect = canvas.canvas.getBoundingClientRect();
+    const selectedPointX = e.pageX - rect.left;
+    const selectedPointY = e.pageY - rect.top;
+    for (const rect of Array.from(canvas.state.rectList)) {
+      if (rect.selected) {
+        rect.selectedPointX = selectedPointX;
+        rect.selectedPointY = selectedPointY;
+      }
+    }
+    for (const ellipse of Array.from(canvas.state.ellipseList)) {
+      if (ellipse.selected) {
+        ellipse.selectedPointX = selectedPointX;
+        ellipse.selectedPointY = selectedPointY;
+      }
+    }
+  },
+
+  onMouseup: (e, canvas) => {
+    canvas.state.isDragging = false;
+    const ctx = canvas.canvas.getContext('2d');
+    const rect = canvas.canvas.getBoundingClientRect();
+    const endX = e.pageX - rect.left;
+    const endY = e.pageY - rect.top;
+    canvas.state.rectList.forEach((rect) => {
+      if (rect.selected && rect.selectedPointX && rect.selectedPointY) {
+        const offsetX = endX - rect.selectedPointX;
+        const offsetY = endY - rect.selectedPointY;
+        rect.startX = rect.startX + offsetX;
+        rect.startY = rect.startY + offsetY;
+        const isRight = endX  >= rect.startX;
+        const isBottom = endY >= rect.startY;
+        rect.selectedShape = calcRectPorts(
+          rect.startX,
+          rect.startY,
+          rect.width,
+          rect.height,
+          isRight,
+          isBottom
+        )
+      }
+    });
+    // TODO
+    // canvas.state.ellipseList.forEach((ellipse) => {
+    //   if (ellipse.selected && ellipse.selectedPointX && ellipse.selectedPointY) {
+    //     const offsetX = endX - ellipse.selectedPointX;
+    //     const offsetY = endY - ellipse.selectedPointY;
+    //     ellipse.startX = ellipse.startX + offsetX;
+    //     ellipse.startY = ellipse.startY + offsetY;
+    //     ellipse.selectedShape = calcEllipsePorts(
+    //       canvas.state.startX,
+    //       canvas.state.startY,
+    //       ellipse.width,
+    //       ellipse.height,
+    //     )
+    //   }
+    // });
+    ctx?.clearRect(0, 0, rect.width, rect.height);
+    globalEvents.drawAll(
+      canvas.state.rectList,
+      canvas.state.ellipseList,
+      ctx
+    );
+    globalEvents.drawPoints(
+      canvas.state.rectList,
+      canvas.state.ellipseList,
+      ctx
+    );
+  },
+  onMousemove: (e, canvas) => {
+    canvas.state.isDragging = true;
   },
 };
 
@@ -97,7 +172,7 @@ const globalEvents: GlobalEvents = {
             ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
             ctx.fillStyle = '#3a3a3a';
             ctx.fill();
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 1;
             ctx.stroke();
           });
         }
@@ -111,7 +186,7 @@ const globalEvents: GlobalEvents = {
             ctx.arc(x, y, 3, 0, 2 * Math.PI, false);
             ctx.fillStyle = '#3a3a3a';
             ctx.fill();
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 1;
             ctx.stroke();
           });
         }
@@ -172,7 +247,7 @@ const rectangleEvents: RectangleEvents = {
       const isRight = mouseX >= canvas.state.startX;
       const isBottom = mouseY > canvas.state.startY;
       ctx?.clearRect(0, 0, rect.width, rect.height);
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 1;
       ctx?.beginPath();
       ctx?.rect(
         canvas.state.startX,
@@ -192,7 +267,8 @@ const rectangleEvents: RectangleEvents = {
 };
 
 const ellipseEvents: EllipseEvents = {
-  onClick: (e, canvas) => {},
+  onClick: (e, canvas) => {
+  },
   onMousedown: (e, canvas) => {
     const rect = canvas.canvas.getBoundingClientRect();
     const startX = e.pageX - rect.left;
@@ -244,7 +320,7 @@ const ellipseEvents: EllipseEvents = {
       const centerX = canvas.state.startX + width / 2;
       const centerY = canvas.state.startY + height / 2;
       ctx?.clearRect(0, 0, rect.width, rect.height);
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 1;
       ctx?.beginPath();
       ctx?.ellipse(centerX, centerY, width, height, 0, 0, 2 * Math.PI, false);
       ctx?.stroke();
