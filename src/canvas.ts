@@ -1,16 +1,14 @@
 import { Toolkit } from "./constant";
-import { rectangleEvents, ellipseEvents } from "./events";
+import { rectangleEvents, ellipseEvents, selectedEvents } from "./events";
+import { EllipseSelection, RectSelection } from "./types";
 
 export type Rect = {
   startX: number;
   startY: number;
   width: number;
   height: number;
-  startX: number,
-  startY: number,
-  width: number,
-  height: number,
-}
+  selected: boolean;
+  selectedShape: RectSelection;
 };
 export type Ellipse = {
   startX: number;
@@ -19,13 +17,8 @@ export type Ellipse = {
   height: number;
   centerX: number;
   centerY: number;
-  startX: number,
-  startY: number,
-  width: number,
-  height: number,
-  centerX: number,
-  centerY: number,
-}
+  selected: boolean;
+  selectedShape: EllipseSelection;
 };
 type State = {
   startX: number;
@@ -40,7 +33,10 @@ export interface ICanvas {
   canvas: HTMLCanvasElement;
   state: State;
   registerEventListeners: (toolkit: Toolkit, canvas: ICanvas) => void;
-  unregisterEventListeners: (toolkit: Toolkit | undefined, canvas: ICanvas) => void;
+  unregisterEventListeners: (
+    toolkit: Toolkit | undefined,
+    canvas: ICanvas
+  ) => void;
 }
 
 class Canvas implements ICanvas {
@@ -83,7 +79,10 @@ class Canvas implements ICanvas {
   private ellipseOnMousemove = (e: MouseEvent) => {
     ellipseEvents.onMousemove(e, this);
   };
-  
+  private selectOnClick = (e: MouseEvent) => {
+    selectedEvents.onMousedown(e, this);
+  };
+
   registerEventListeners(toolkit: Toolkit, canvas: ICanvas) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
@@ -98,8 +97,10 @@ class Canvas implements ICanvas {
         this.canvas.addEventListener('mouseup', this.ellipseOnMouseup);
         this.canvas.addEventListener('mousemove', this.ellipseOnMousemove);
         break;
+      case Toolkit.SELECT:
+        this.canvas.addEventListener('click', this.selectOnClick);
         break;
-    
+
       default:
         break;
     }
@@ -119,8 +120,10 @@ class Canvas implements ICanvas {
         this.canvas.removeEventListener('mouseup', this.ellipseOnMouseup);
         this.canvas.removeEventListener('mousemove', this.ellipseOnMousemove);
         break;
+      case Toolkit.SELECT:
+        this.canvas.removeEventListener('click', this.selectOnClick);
         break;
-    
+
       default:
         break;
     }

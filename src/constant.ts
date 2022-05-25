@@ -1,6 +1,7 @@
 enum Toolkit {
   RECTANGLE,
-  ELLIPSE
+  ELLIPSE,
+  SELECT,
 }
 
 export { Toolkit };

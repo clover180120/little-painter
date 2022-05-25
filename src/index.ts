@@ -36,9 +36,21 @@ const nodes = [
         canvas.registerEventListeners(Toolkit.ELLIPSE, canvas);
         canvas.state.currentToolkit = Toolkit.ELLIPSE;
       },
-    }
-  }
-]
+    },
+  },
+  {
+    node: document.getElementById('select'),
+    listeners: {
+      click: () => {
+        if (canvas.state.currentToolkit !== Toolkit.SELECT) {
+          canvas.unregisterEventListeners(canvas.state.currentToolkit, canvas);
+        }
+        canvas.registerEventListeners(Toolkit.SELECT, canvas);
+        canvas.state.currentToolkit = Toolkit.SELECT;
+      },
+    },
+  },
+];
 
 nodes.forEach((nodeObj) => {
   Object.entries(nodeObj.listeners).forEach(([key, value]) => {
