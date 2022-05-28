@@ -1,4 +1,4 @@
-import { Toolkit } from "./constant";
+import { Toolkit } from "./types";
 import Canvas from "./canvas";
 
 let canvas = new Canvas(document.getElementById('canvas') as HTMLCanvasElement);

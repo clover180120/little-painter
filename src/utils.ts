@@ -1,4 +1,5 @@
-import { Ellipse, Rect } from "./canvas";
+import { ICanvas } from './canvas';
+import { Ellipse, Rect } from "./types";
 import { RectSelection, EllipseSelection } from "./types";
 
 export const calcRectPorts = (
@@ -100,3 +101,25 @@ export const disableAllSelectedShape = (
     ellipse.selected = false;
   });
 };
+
+export const getRectProps = (e: MouseEvent, canvas: ICanvas) => {
+  const mouseX = e.pageX - canvas.canvasRect.left;
+  const mouseY = e.pageY - canvas.canvasRect.top;
+  const width = Math.abs(mouseX - canvas.state.startX);
+  const height = Math.abs(mouseY - canvas.state.startY);
+  const isRight = mouseX >= canvas.state.startX;
+  const isBottom = mouseY > canvas.state.startY;
+  return { mouseX, mouseY, width, height, isRight, isBottom }
+}
+
+export const getEllipseProps = (e: MouseEvent, canvas: ICanvas) => {
+  const mouseX = e.pageX - canvas.canvasRect.left;
+  const mouseY = e.pageY - canvas.canvasRect.top;
+  const width = Math.abs(mouseX - canvas.state.startX);
+  const height = Math.abs(mouseY - canvas.state.startY);
+  const centerX = mouseX + width / 2;
+  const centerY = mouseY + height / 2;
+  const isRight = mouseX >= canvas.state.startX;
+  const isBottom = mouseY > canvas.state.startY;
+  return { mouseX, mouseY, width, height, centerX, centerY, isRight, isBottom }
+}

@@ -1,29 +1,7 @@
-import { Toolkit } from "./constant";
+import { Toolkit } from "./types";
 import { rectangleEvents, ellipseEvents, selectedEvents } from "./events";
-import { EllipseSelection, RectSelection } from "./types";
+import { Rect, Ellipse } from "./types";
 
-export type Rect = {
-  startX: number;
-  startY: number;
-  selectedPointX?: number;
-  selectedPointY?: number;
-  width: number;
-  height: number;
-  selected: boolean;
-  selectedShape: RectSelection;
-};
-export type Ellipse = {
-  startX: number;
-  startY: number;
-  selectedPointX?: number;
-  selectedPointY?: number;
-  width: number;
-  height: number;
-  centerX: number;
-  centerY: number;
-  selected: boolean;
-  selectedShape: EllipseSelection;
-};
 type State = {
   startX: number;
   startY: number;
@@ -38,6 +16,8 @@ type State = {
 
 export interface ICanvas {
   canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D | null;
+  canvasRect: DOMRect;
   state: State;
   registerEventListeners: (toolkit: Toolkit, canvas: ICanvas) => void;
   unregisterEventListeners: (
@@ -49,9 +29,13 @@ export interface ICanvas {
 class Canvas implements ICanvas {
   canvas: HTMLCanvasElement;
   state: State;
+  ctx: CanvasRenderingContext2D | null;
+  canvasRect: DOMRect;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d')
+    this.canvasRect = this.canvas.getBoundingClientRect()
     this.state = {
       startX: 0,
       startY: 0,
@@ -65,9 +49,6 @@ class Canvas implements ICanvas {
     };
   }
 
-  private rectangleOnClick = (e: MouseEvent) => {
-    rectangleEvents.onClick(e, this);
-  };
   private rectangleOnMousedown = (e: MouseEvent) => {
     rectangleEvents.onMousedown(e, this);
   };
@@ -76,9 +57,6 @@ class Canvas implements ICanvas {
   };
   private rectangleOnMousemove = (e: MouseEvent) => {
     rectangleEvents.onMousemove(e, this);
-  };
-  private ellipseOnClick = (e: MouseEvent) => {
-    ellipseEvents.onClick(e, this);
   };
   private ellipseOnMousedown = (e: MouseEvent) => {
     ellipseEvents.onMousedown(e, this);
@@ -105,13 +83,11 @@ class Canvas implements ICanvas {
   registerEventListeners(toolkit: Toolkit, canvas: ICanvas) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
-        this.canvas.addEventListener('click', this.rectangleOnClick);
         this.canvas.addEventListener('mousedown', this.rectangleOnMousedown);
         this.canvas.addEventListener('mouseup', this.rectangleOnMouseup);
         this.canvas.addEventListener('mousemove', this.rectangleOnMousemove);
         break;
       case Toolkit.ELLIPSE:
-        this.canvas.addEventListener('click', this.ellipseOnClick);
         this.canvas.addEventListener('mousedown', this.ellipseOnMousedown);
         this.canvas.addEventListener('mouseup', this.ellipseOnMouseup);
         this.canvas.addEventListener('mousemove', this.ellipseOnMousemove);
@@ -131,13 +107,11 @@ class Canvas implements ICanvas {
   unregisterEventListeners(toolkit: Toolkit | undefined, canvas: ICanvas) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
-        this.canvas.removeEventListener('click', this.rectangleOnClick);
         this.canvas.removeEventListener('mousedown', this.rectangleOnMousedown);
         this.canvas.removeEventListener('mouseup', this.rectangleOnMouseup);
         this.canvas.removeEventListener('mousemove', this.rectangleOnMousemove);
         break;
       case Toolkit.ELLIPSE:
-        this.canvas.removeEventListener('click', this.ellipseOnClick);
         this.canvas.removeEventListener('mousedown', this.ellipseOnMousedown);
         this.canvas.removeEventListener('mouseup', this.ellipseOnMouseup);
         this.canvas.removeEventListener('mousemove', this.ellipseOnMousemove);
