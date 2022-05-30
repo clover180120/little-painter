@@ -3,7 +3,7 @@ html, body {
   padding: 0;
 }
 .main-container {
-  height: 100vh;
+  height: 100%;
   display: flex;
 }
 .header {
@@ -18,7 +18,7 @@ html, body {
   cursor: pointer;
 }
 .toolbar {
-  height: 100vh;
+  height: calc(100vh - 40px);
   background-color: #bfbfbf;
   box-shadow: 3px 3px 4px 1px #666;
 }
