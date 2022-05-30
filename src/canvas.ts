@@ -12,6 +12,7 @@ type State = {
   rectList: Rect[];
   ellipseList: Ellipse[];
   currentToolkit: Toolkit | undefined;
+  zIndex: number;
 };
 
 export interface ICanvas {
@@ -19,6 +20,7 @@ export interface ICanvas {
   ctx: CanvasRenderingContext2D | null;
   canvasRect: DOMRect;
   state: State;
+  popZIndex: () => number;
   registerEventListeners: (toolkit: Toolkit, canvas: ICanvas) => void;
   unregisterEventListeners: (
     toolkit: Toolkit | undefined,
@@ -34,8 +36,8 @@ class Canvas implements ICanvas {
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
-    this.ctx = this.canvas.getContext('2d')
-    this.canvasRect = this.canvas.getBoundingClientRect()
+    this.ctx = this.canvas.getContext('2d');
+    this.canvasRect = this.canvas.getBoundingClientRect();
     this.state = {
       startX: 0,
       startY: 0,
@@ -46,7 +48,12 @@ class Canvas implements ICanvas {
       rectList: [],
       ellipseList: [],
       currentToolkit: undefined,
+      zIndex: 0,
     };
+    if (this.ctx) {
+      this.ctx.lineJoin = 'round';
+      this.ctx.lineWidth = 2;
+    }
   }
 
   private rectangleOnMousedown = (e: MouseEvent) => {
@@ -67,9 +74,6 @@ class Canvas implements ICanvas {
   private ellipseOnMousemove = (e: MouseEvent) => {
     ellipseEvents.onMousemove(e, this);
   };
-  private selectOnClick = (e: MouseEvent) => {
-    selectedEvents.onClick(e, this);
-  };
   private selectOnMousemove = (e: MouseEvent) => {
     selectedEvents.onMousemove(e, this);
   };
@@ -79,6 +83,10 @@ class Canvas implements ICanvas {
   private selectOnMousedown = (e: MouseEvent) => {
     selectedEvents.onMousedown(e, this);
   };
+
+  popZIndex(): number {
+    return this.state.zIndex++;
+  }
 
   registerEventListeners(toolkit: Toolkit, canvas: ICanvas) {
     switch (toolkit) {
@@ -93,7 +101,6 @@ class Canvas implements ICanvas {
         this.canvas.addEventListener('mousemove', this.ellipseOnMousemove);
         break;
       case Toolkit.SELECT:
-        this.canvas.addEventListener('click', this.selectOnClick);
         this.canvas.addEventListener('mousedown', this.selectOnMousedown);
         this.canvas.addEventListener('mouseup', this.selectOnMouseup);
         this.canvas.addEventListener('mousemove', this.selectOnMousemove);
@@ -117,7 +124,9 @@ class Canvas implements ICanvas {
         this.canvas.removeEventListener('mousemove', this.ellipseOnMousemove);
         break;
       case Toolkit.SELECT:
-        this.canvas.removeEventListener('click', this.selectOnClick);
+        this.canvas.removeEventListener('mousedown', this.selectOnMousedown);
+        this.canvas.removeEventListener('mouseup', this.selectOnMouseup);
+        this.canvas.removeEventListener('mousemove', this.selectOnMousemove);
         break;
 
       default:

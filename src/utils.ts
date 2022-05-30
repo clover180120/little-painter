@@ -7,27 +7,23 @@ export const calcRectPorts = (
   startY: number,
   rectWidth: number,
   rectHeight: number,
-  isRight: boolean,
-  isBottom: boolean
 ): RectSelection => {
-  const width = isRight ? rectWidth : -rectWidth;
-  const height = isBottom ? rectHeight : -rectHeight;
   return {
     top: {
-      x: startX + width / 2,
+      x: startX + rectWidth / 2,
       y: startY,
     },
     bottom: {
-      x: startX + width / 2,
-      y: startY + height,
+      x: startX + rectWidth / 2,
+      y: startY + rectHeight,
     },
     left: {
       x: startX,
-      y: startY + height / 2,
+      y: startY + rectHeight / 2,
     },
     right: {
-      x: startX + width,
-      y: startY + height / 2,
+      x: startX + rectWidth,
+      y: startY + rectHeight / 2,
     },
   };
 };
@@ -57,32 +53,60 @@ export const calcEllipsePorts = (
   };
 };
 
+const compareZIndex = (a: number | undefined, b: number | undefined) => {
+  return (b as number) - (a as number)
+}
+
 export const findSelectedShape = (
   x: number,
   y: number,
   rectList: Rect[],
   ellipseList: Ellipse[],
+  ctx: CanvasRenderingContext2D | null,
 ): Rect | Ellipse | null => {
-  const rectIndex = rectList.findIndex(
-    (rect) =>
-      x >= rect.startX &&
-      x <= rect.startX + rect.width &&
-      y >= rect.startY &&
-      y <= rect.startY + rect.height
+  const rectIndex = rectList.sort((a, b) => compareZIndex(a.zIndex, b.zIndex)).findIndex(
+    (rect) => {
+      if (ctx?.isPointInPath(rect.node as Path2D, x, y)) {
+        switch (true) {
+          // IV 象限
+          case (rect.width >= 0 && rect.height >= 0):
+            return (x >= rect.startX && x <= rect.startX + rect.width && y >= rect.startY && y <= rect.startY + rect.height)
+          // I 象限
+          case (rect.width >= 0 && rect.height <= 0):
+            return (x >= rect.startX && x <= rect.startX + rect.width && y <= rect.startY && y >= rect.startY + rect.height)
+          // II 象限
+          case (rect.width <= 0 && rect.height <= 0):
+            return (x <= rect.startX && x >= rect.startX + rect.width && y <= rect.startY && y >= rect.startY + rect.height)
+          // III 象限
+          case (rect.width <= 0 && rect.height >= 0):
+            return (x <= rect.startX && x >= rect.startX + rect.width && y >= rect.startY && y <= rect.startY + rect.height)
+          default:
+            return false
+        }
+      };
+    }
   );
+
+  
+  const ellipseIndex = ellipseList.sort((a, b) => compareZIndex(a.zIndex, b.zIndex)).findIndex(
+    (ellipse) => {
+      if (x >= ellipse.startX - ellipse.width && x <= ellipse.startX + ellipse.width) {
+        if (y >= ellipse.startY - ellipse.height && y <= ellipse.startY + ellipse.height) {
+          if (ctx?.isPointInPath(ellipse.node as Path2D, x, y)) return true;
+        }
+      }
+      return false;
+    }
+  );
+  if (rectIndex !== -1 && ellipseIndex !== -1) {
+    const topRect = rectList[rectIndex];
+    const topEllipse = ellipseList[ellipseIndex];
+    return (topRect.zIndex as number) > (topEllipse.zIndex as number) ? topRect : topEllipse
+  }
 
   if (rectIndex !== -1) {
     return rectList[rectIndex];
   }
-
-  const ellipseIndex = ellipseList.findIndex(
-    (ellipse) =>
-      x >= ellipse.startX &&
-      x <= ellipse.startX + ellipse.width &&
-      y >= ellipse.startY &&
-      y <= ellipse.startY + ellipse.height
-  );
-
   if (ellipseIndex !== -1) {
     return ellipseList[ellipseIndex];
   }
