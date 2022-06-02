@@ -57,3 +57,9 @@ nodes.forEach((nodeObj) => {
     nodeObj.node?.addEventListener(key, value);
   });
 });
+
+let dropdown = document.getElementById('dropdown-btn');
+let dropdownContent = document.querySelector('.dropdown-content');
+dropdown?.addEventListener('click', () => {
+  dropdownContent?.classList.toggle('show');
+});
