@@ -1,6 +1,6 @@
 import { Toolkit } from "./types";
 import { rectangleEvents, ellipseEvents, selectedEvents } from "./events";
-import { Rect, Ellipse } from "./types";
+import { Shape } from "./shapes";
 
 type State = {
   startX: number;
@@ -9,26 +9,25 @@ type State = {
   selectedPointY?: number;
   isDrawing: boolean;
   isDragging: boolean;
-  rectList: Rect[];
-  ellipseList: Ellipse[];
+  shapeList: Shape[];
   currentToolkit: Toolkit | undefined;
   zIndex: number;
 };
 
-export interface ICanvas {
+export interface App {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | null;
   canvasRect: DOMRect;
   state: State;
   popZIndex: () => number;
-  registerEventListeners: (toolkit: Toolkit, canvas: ICanvas) => void;
+  registerEventListeners: (toolkit: Toolkit, canvas: App) => void;
   unregisterEventListeners: (
     toolkit: Toolkit | undefined,
-    canvas: ICanvas
+    canvas: App
   ) => void;
 }
 
-class Canvas implements ICanvas {
+class AppImpl implements App {
   canvas: HTMLCanvasElement;
   state: State;
   ctx: CanvasRenderingContext2D | null;
@@ -45,14 +44,13 @@ class Canvas implements ICanvas {
       selectedPointY: 0,
       isDrawing: false,
       isDragging: false,
-      rectList: [],
-      ellipseList: [],
+      shapeList: [],
       currentToolkit: undefined,
       zIndex: 0,
     };
     if (this.ctx) {
       this.ctx.lineJoin = 'round';
-      this.ctx.lineWidth = 2;
+      this.ctx.lineWidth = 1;
     }
   }
 
@@ -88,7 +86,7 @@ class Canvas implements ICanvas {
     return this.state.zIndex++;
   }
 
-  registerEventListeners(toolkit: Toolkit, canvas: ICanvas) {
+  registerEventListeners(toolkit: Toolkit, canvas: App) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
         this.canvas.addEventListener('mousedown', this.rectangleOnMousedown);
@@ -111,7 +109,7 @@ class Canvas implements ICanvas {
     }
   }
 
-  unregisterEventListeners(toolkit: Toolkit | undefined, canvas: ICanvas) {
+  unregisterEventListeners(toolkit: Toolkit | undefined, canvas: App) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
         this.canvas.removeEventListener('mousedown', this.rectangleOnMousedown);
@@ -135,4 +133,4 @@ class Canvas implements ICanvas {
   }
 }
 
-export default Canvas;
+export { AppImpl };

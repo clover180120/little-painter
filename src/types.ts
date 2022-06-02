@@ -14,31 +14,3 @@ export type SelectedShape = {
 export type RectSelection = SelectedShape;
 
 export type EllipseSelection = SelectedShape;
-
-export type Rect = {
-  startX: number;
-  startY: number;
-  selectedPointX?: number;
-  selectedPointY?: number;
-  width: number;
-  height: number;
-  selected?: boolean;
-  selectedShape?: RectSelection;
-  node?: Path2D;
-  zIndex?: number;
-};
-
-export type Ellipse = {
-  startX: number;
-  startY: number;
-  selectedPointX?: number;
-  selectedPointY?: number;
-  width: number;
-  height: number;
-  centerX: number;
-  centerY: number;
-  selected?: boolean;
-  selectedShape?: EllipseSelection;
-  node?: Path2D;
-  zIndex?: number;
-};

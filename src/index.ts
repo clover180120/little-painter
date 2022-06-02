@@ -1,17 +1,17 @@
 import { Toolkit } from "./types";
-import Canvas from "./canvas";
+import { AppImpl } from "./app";
 
-let canvas = new Canvas(document.getElementById('canvas') as HTMLCanvasElement);
+let app = new AppImpl(document.getElementById('canvas') as HTMLCanvasElement);
 const nodes = [
   {
     node: document.getElementById('rectangle'),
     listeners: {
       click: () => {
-        if (canvas.state.currentToolkit !== Toolkit.RECTANGLE) {
-          canvas.unregisterEventListeners(canvas.state.currentToolkit, canvas);
+        if (app.state.currentToolkit !== Toolkit.RECTANGLE) {
+          app.unregisterEventListeners(app.state.currentToolkit, app);
         }
-        canvas.registerEventListeners(Toolkit.RECTANGLE, canvas);
-        canvas.state.currentToolkit = Toolkit.RECTANGLE;
+        app.registerEventListeners(Toolkit.RECTANGLE, app);
+        app.state.currentToolkit = Toolkit.RECTANGLE;
       },
     },
   },
@@ -30,11 +30,11 @@ const nodes = [
     node: document.getElementById('ellipse'),
     listeners: {
       click: () => {
-        if (canvas.state.currentToolkit !== Toolkit.ELLIPSE) {
-          canvas.unregisterEventListeners(canvas.state.currentToolkit, canvas);
+        if (app.state.currentToolkit !== Toolkit.ELLIPSE) {
+          app.unregisterEventListeners(app.state.currentToolkit, app);
         }
-        canvas.registerEventListeners(Toolkit.ELLIPSE, canvas);
-        canvas.state.currentToolkit = Toolkit.ELLIPSE;
+        app.registerEventListeners(Toolkit.ELLIPSE, app);
+        app.state.currentToolkit = Toolkit.ELLIPSE;
       },
     },
   },
@@ -42,11 +42,11 @@ const nodes = [
     node: document.getElementById('select'),
     listeners: {
       click: () => {
-        if (canvas.state.currentToolkit !== Toolkit.SELECT) {
-          canvas.unregisterEventListeners(canvas.state.currentToolkit, canvas);
+        if (app.state.currentToolkit !== Toolkit.SELECT) {
+          app.unregisterEventListeners(app.state.currentToolkit, app);
         }
-        canvas.registerEventListeners(Toolkit.SELECT, canvas);
-        canvas.state.currentToolkit = Toolkit.SELECT;
+        app.registerEventListeners(Toolkit.SELECT, app);
+        app.state.currentToolkit = Toolkit.SELECT;
       },
     },
   },
