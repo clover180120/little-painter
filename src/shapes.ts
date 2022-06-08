@@ -1,10 +1,12 @@
-import { EllipseSelection, RectSelection } from './types';
+import { ConnectionPorts, EllipseSelection, RectSelection } from './types';
 
 export abstract class Shape {
   startX: number;
   startY: number;
   selectedStartX: number;
   selectedStartY: number;
+  width: number;
+  height: number;
   zIndex: number;
   selected: boolean;
   selectedShape?: RectSelection | EllipseSelection | undefined;
@@ -15,6 +17,8 @@ export abstract class Shape {
     startY: number,
     selectedStartX: number,
     selectedStartY: number,
+    width: number,
+    height: number,
     zIndex: number,
     selected: boolean,
     selectedShape?: RectSelection | EllipseSelection | undefined,
@@ -24,6 +28,8 @@ export abstract class Shape {
     this.startY = startY;
     this.selectedStartX = selectedStartX;
     this.selectedStartY = selectedStartY;
+    this.width = width;
+    this.height = height;
     this.zIndex = zIndex;
     this.selected = selected;
     this.selectedShape = selectedShape;
@@ -34,6 +40,66 @@ export abstract class Shape {
   abstract drawPoints(): void;
   abstract calcPointsPosition(x: number, y: number): RectSelection;
   abstract fillText(): void;
+}
+
+export abstract class Line {
+  fromShape: Shape;
+  toShape: Shape;
+  ctx: CanvasRenderingContext2D;
+
+  constructor(fromShape: Shape, toShape: Shape, ctx: CanvasRenderingContext2D) {
+    this.fromShape = fromShape;
+    this.toShape = toShape;
+    this.ctx = ctx;
+  }
+  abstract drawLine(): void;
+  findConnectionPort(): ConnectionPorts | null {
+    if (this.fromShape.selectedShape && this.toShape.selectedShape) {
+      let minDistance = Number.MAX_VALUE;
+      let connectionPorts: ConnectionPorts = {
+        from: {x: 0, y: 0},
+        to: {x: 0, y: 0},
+      };
+      for (const fromPoint of Object.values(this.fromShape.selectedShape)) {
+        for (const toPoint of Object.values(this.toShape.selectedShape)) {
+          const xDiff = fromPoint.x - toPoint.x;
+          const yDiff = fromPoint.y - toPoint.y;
+          const dist = Math.sqrt((Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
+          if (dist < minDistance) {
+            minDistance = dist;
+            connectionPorts.from = fromPoint;
+            connectionPorts.to = toPoint;
+          }
+        }
+      }
+      return connectionPorts;
+    }
+    return null;
+  };
+}
+
+export class AssociationLine extends Line {
+  drawLine(): void {
+    const connectionPorts = this.findConnectionPort();
+    if (connectionPorts) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(connectionPorts.from.x, connectionPorts.from.y);
+      this.ctx.lineTo(connectionPorts.to.x, connectionPorts.to.y);
+      this.ctx.stroke();
+    }
+  }
+}
+
+export class GeneralizationLine extends Line {
+   drawLine(): void {
+    
+  }
+}
+
+export class CompositionLine extends Line {
+   drawLine(): void {
+    
+  }
 }
 
 export interface Rect {
@@ -50,8 +116,6 @@ export interface Rect {
 
 export class RectShape extends Shape implements Rect {
   ctx: CanvasRenderingContext2D;
-  width: number;
-  height: number;
   selectedShape?: RectSelection;
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -66,10 +130,8 @@ export class RectShape extends Shape implements Rect {
     selectedShape?: RectSelection,
     name?: string,
   ) {
-    super(startX, startY, selectedStartX, selectedStartY, zIndex, selected);
+    super(startX, startY, selectedStartX, selectedStartY, width, height, zIndex, selected);
     this.ctx = ctx;
-    this.width = width;
-    this.height = height;
     this.selectedShape = selectedShape;
     this.name = name;
   };
@@ -159,8 +221,6 @@ export interface Ellipse {
 
 export class EllipseShape extends Shape implements Ellipse {
   ctx: CanvasRenderingContext2D;
-  width: number;
-  height: number;
   centerX: number;
   centerY: number;
   selectedShape?: EllipseSelection;
@@ -179,10 +239,8 @@ export class EllipseShape extends Shape implements Ellipse {
     selectedShape?: EllipseSelection,
     name?: string,
   ) {
-    super(startX, startY, selectedStartX, selectedStartY, zIndex, selected);
+    super(startX, startY, selectedStartX, selectedStartY, width, height, zIndex, selected);
     this.ctx = ctx;
-    this.width = width;
-    this.height = height;
     this.centerX = centerX;
     this.centerY = centerY;
     this.selectedShape = selectedShape;

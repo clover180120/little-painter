@@ -53,3 +53,16 @@ export const getEllipseProps = (e: MouseEvent, canvas: App) => {
   const isBottom = mouseY > canvas.state.startY;
   return { mouseX, mouseY, width, height, centerX, centerY, isRight, isBottom }
 }
+
+export const findOverlay = (shape: Shape, shapeList: Shape[]): Shape | null => {
+  for (const otherShape of shapeList) {
+    if (!otherShape.selected) {
+      const isOverlapping = !((shape.startX + shape.width) < otherShape.startX
+        || shape.startX > (otherShape.startX + otherShape.width)
+        || (shape.startY + shape.height) < otherShape.startY
+        || shape.startY > (otherShape.startY + otherShape.height));
+      if (isOverlapping) return otherShape;
+    }
+  }
+  return null;
+}

@@ -50,6 +50,42 @@ const tools = [
       },
     },
   },
+  {
+    node: document.getElementById('association'),
+    listeners: {
+      click: () => {
+        if (app.state.currentToolkit !== Toolkit.ASSOCIATION) {
+          app.unregisterEventListeners(app.state.currentToolkit, app);
+        }
+        app.registerEventListeners(Toolkit.ASSOCIATION, app);
+        app.state.currentToolkit = Toolkit.ASSOCIATION;
+      },
+    },
+  },
+  {
+    node: document.getElementById('generalization'),
+    listeners: {
+      click: () => {
+        if (app.state.currentToolkit !== Toolkit.GENERALIZATION) {
+          app.unregisterEventListeners(app.state.currentToolkit, app);
+        }
+        app.registerEventListeners(Toolkit.GENERALIZATION, app);
+        app.state.currentToolkit = Toolkit.GENERALIZATION;
+      },
+    },
+  },
+  {
+    node: document.getElementById('composition'),
+    listeners: {
+      click: () => {
+        if (app.state.currentToolkit !== Toolkit.COMPOSITION) {
+          app.unregisterEventListeners(app.state.currentToolkit, app);
+        }
+        app.registerEventListeners(Toolkit.COMPOSITION, app);
+        app.state.currentToolkit = Toolkit.COMPOSITION;
+      },
+    },
+  },
 ];
 
 tools.forEach((nodeObj) => {

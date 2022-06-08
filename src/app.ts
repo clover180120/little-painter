@@ -1,6 +1,6 @@
 import { Toolkit } from "./types";
-import { rectangleEvents, ellipseEvents, selectedEvents } from "./events";
-import { Shape } from "./shapes";
+import { rectangleEvents, ellipseEvents, selectedEvents, associationEvents, generalizationEvents, compositionEvents } from "./events";
+import { Line, Shape } from "./shapes";
 
 type State = {
   startX: number;
@@ -10,6 +10,7 @@ type State = {
   isDrawing: boolean;
   isDragging: boolean;
   shapeList: Shape[];
+  lineList: Line[];
   currentToolkit: Toolkit | undefined;
   zIndex: number;
 };
@@ -45,6 +46,7 @@ class AppImpl implements App {
       isDrawing: false,
       isDragging: false,
       shapeList: [],
+      lineList: [],
       currentToolkit: undefined,
       zIndex: 0,
     };
@@ -130,6 +132,33 @@ class AppImpl implements App {
   private selectOnMousedown = (e: MouseEvent) => {
     selectedEvents.onMousedown(e, this);
   };
+  private associationOnMousemove = (e: MouseEvent) => {
+    associationEvents.onMousemove(e, this);
+  };
+  private associationOnMouseup = (e: MouseEvent) => {
+    associationEvents.onMouseup(e, this);
+  };
+  private associationOnMousedown = (e: MouseEvent) => {
+    associationEvents.onMousedown(e, this);
+  };
+  private generalizationOnMousemove = (e: MouseEvent) => {
+    generalizationEvents.onMousemove(e, this);
+  };
+  private generalizationOnMouseup = (e: MouseEvent) => {
+    generalizationEvents.onMouseup(e, this);
+  };
+  private generalizationOnMousedown = (e: MouseEvent) => {
+    generalizationEvents.onMousedown(e, this);
+  };
+  private compositionOnMousemove = (e: MouseEvent) => {
+    compositionEvents.onMousemove(e, this);
+  };
+  private compositionOnMouseup = (e: MouseEvent) => {
+    compositionEvents.onMouseup(e, this);
+  };
+  private compositionOnMousedown = (e: MouseEvent) => {
+    compositionEvents.onMousedown(e, this);
+  };
 
   popZIndex(): number {
     return this.state.zIndex++;
@@ -152,7 +181,21 @@ class AppImpl implements App {
         this.canvas.addEventListener('mouseup', this.selectOnMouseup);
         this.canvas.addEventListener('mousemove', this.selectOnMousemove);
         break;
-
+      case Toolkit.ASSOCIATION:
+        this.canvas.addEventListener('mousedown', this.associationOnMousedown);
+        this.canvas.addEventListener('mouseup', this.associationOnMouseup);
+        this.canvas.addEventListener('mousemove', this.associationOnMousemove);
+        break;
+      case Toolkit.GENERALIZATION:
+        this.canvas.addEventListener('mousedown', this.generalizationOnMousedown);
+        this.canvas.addEventListener('mouseup', this.generalizationOnMouseup);
+        this.canvas.addEventListener('mousemove', this.generalizationOnMousemove);
+        break;
+      case Toolkit.COMPOSITION:
+        this.canvas.addEventListener('mousedown', this.compositionOnMousedown);
+        this.canvas.addEventListener('mouseup', this.compositionOnMouseup);
+        this.canvas.addEventListener('mousemove', this.compositionOnMousemove);
+        break;
       default:
         break;
     }
@@ -175,7 +218,21 @@ class AppImpl implements App {
         this.canvas.removeEventListener('mouseup', this.selectOnMouseup);
         this.canvas.removeEventListener('mousemove', this.selectOnMousemove);
         break;
-
+      case Toolkit.ASSOCIATION:
+        this.canvas.removeEventListener('mousedown', this.associationOnMousedown);
+        this.canvas.removeEventListener('mouseup', this.associationOnMouseup);
+        this.canvas.removeEventListener('mousemove', this.associationOnMousemove);
+        break;
+      case Toolkit.GENERALIZATION:
+        this.canvas.removeEventListener('mousedown', this.generalizationOnMousedown);
+        this.canvas.removeEventListener('mouseup', this.generalizationOnMouseup);
+        this.canvas.removeEventListener('mousemove', this.generalizationOnMousemove);
+        break;
+      case Toolkit.COMPOSITION:
+        this.canvas.removeEventListener('mousedown', this.compositionOnMousedown);
+        this.canvas.removeEventListener('mouseup', this.compositionOnMouseup);
+        this.canvas.removeEventListener('mousemove', this.compositionOnMousemove);
+        break;
       default:
         break;
     }

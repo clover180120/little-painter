@@ -2,6 +2,9 @@ export enum Toolkit {
   RECTANGLE,
   ELLIPSE,
   SELECT,
+  ASSOCIATION,
+  GENERALIZATION,
+  COMPOSITION,
 }
 
 export type SelectedShape = {
@@ -14,3 +17,14 @@ export type SelectedShape = {
 export type RectSelection = SelectedShape;
 
 export type EllipseSelection = SelectedShape;
+
+export type ConnectionPorts = {
+  from: {
+    x: number,
+    y: number,
+  },
+  to: {
+    x: number,
+    y: number,
+  },
+};
