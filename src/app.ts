@@ -52,6 +52,55 @@ class AppImpl implements App {
       this.ctx.lineJoin = 'round';
       this.ctx.lineWidth = 1;
     }
+    let dropdown = document.getElementById('dropdown-btn');
+    let dropdownContent = document.querySelector('.dropdown-content');
+    let dropdownName = document.getElementById('dropdown-name');
+    let dialog: any = document.getElementById('dialog');
+    let submit = document.getElementById('submit');
+    let closeDialog = document.getElementById('close-dialog');
+
+    dropdown?.addEventListener('click', () => {
+      dropdownContent?.classList.toggle('show');
+    });
+    const state = {
+      isDialogOpened: false,
+    }
+    dropdownName?.addEventListener('click', () => {
+      this.state.shapeList.forEach((shape) => {
+        if (shape.selected) {
+          state.isDialogOpened = true;
+          if (state.isDialogOpened) {
+            dropdownContent?.classList.remove('show');
+            dialog?.showModal();
+          }
+        }
+      })
+    })
+    submit?.addEventListener('click', () => {
+      let inputDOM = document.getElementById('name') as HTMLInputElement | null;
+      let inputValue = inputDOM?.value;
+      if (inputValue) {
+        dialog?.close();
+        this.state.shapeList.forEach((shape) => {
+          if (shape.selected) {
+            shape.name = inputValue;
+          }
+        })
+      }
+      if (inputDOM) {
+        inputDOM.value = '';
+      }
+      this.state.shapeList.forEach((shape) => {
+        if (shape.name) {
+          shape.draw();
+          shape.drawPoints();
+          shape.fillText();
+        }
+      })
+    })
+    closeDialog?.addEventListener('click', () => {
+      dialog?.close();
+    })
   }
 
   private rectangleOnMousedown = (e: MouseEvent) => {

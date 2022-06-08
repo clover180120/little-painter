@@ -2,7 +2,7 @@ import { Toolkit } from "./types";
 import { AppImpl } from "./app";
 
 let app = new AppImpl(document.getElementById('canvas') as HTMLCanvasElement);
-const nodes = [
+const tools = [
   {
     node: document.getElementById('rectangle'),
     listeners: {
@@ -52,14 +52,8 @@ const nodes = [
   },
 ];
 
-nodes.forEach((nodeObj) => {
+tools.forEach((nodeObj) => {
   Object.entries(nodeObj.listeners).forEach(([key, value]) => {
     nodeObj.node?.addEventListener(key, value);
   });
-});
-
-let dropdown = document.getElementById('dropdown-btn');
-let dropdownContent = document.querySelector('.dropdown-content');
-dropdown?.addEventListener('click', () => {
-  dropdownContent?.classList.toggle('show');
 });

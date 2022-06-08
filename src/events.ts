@@ -28,6 +28,7 @@ const drawAll = (shapeList: Shape[]) => {
  shapeList.forEach((shape) => {
    shape.draw();
    shape.drawPoints();
+   shape.fillText();
   })
 };
 
@@ -72,7 +73,6 @@ const selectedEvents: SelectedEvents = {
         shape.startX += offsetX;
         shape.startY += offsetY;
         shape.selectedShape = shape.calcPointsPosition(shape.startX, shape.startY);
-        shape.drawPoints();
       }
     })
     clearCanvas(canvas);

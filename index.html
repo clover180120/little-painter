@@ -10,13 +10,18 @@
 <body>
   <div id="root">
     <nav class="header">
-      <span class="header-item">File</span>
       <div class="header-item dropdown">
         <button id="dropdown-btn" class="dropbtn">Edit</button>
-        <div id="myDropdown" class="dropdown-content">
-          <a>新增物件名字</a>
+        <div class="dropdown-content">
+          <a id="dropdown-name">新增物件名字</a>
         </div>
       </div>
+      <dialog id="dialog">
+        請幫物件命名
+        <input id="name" />
+        <button id="close-dialog">Close</button>
+        <button type="submit" id="submit">Confirm</button>
+      </dialog>
     </nav>
     <div class="main-container">
       <div class="toolbar">

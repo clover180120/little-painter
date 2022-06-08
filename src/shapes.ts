@@ -7,7 +7,8 @@ export abstract class Shape {
   selectedStartY: number;
   zIndex: number;
   selected: boolean;
-  selectedShape?: RectSelection | EllipseSelection | undefined
+  selectedShape?: RectSelection | EllipseSelection | undefined;
+  name?: string;
 
   constructor(
     startX: number,
@@ -16,7 +17,8 @@ export abstract class Shape {
     selectedStartY: number,
     zIndex: number,
     selected: boolean,
-    selectedShape?:RectSelection | EllipseSelection | undefined
+    selectedShape?: RectSelection | EllipseSelection | undefined,
+    name?: string,
   ) {
     this.startX = startX;
     this.startY = startY;
@@ -24,25 +26,26 @@ export abstract class Shape {
     this.selectedStartY = selectedStartY;
     this.zIndex = zIndex;
     this.selected = selected;
-    this.selectedShape = selectedShape
+    this.selectedShape = selectedShape;
+    this.name = name;
   }
   abstract isShapeSelected(x: number, y: number): boolean;
   abstract draw(): void;
   abstract drawPoints(): void;
   abstract calcPointsPosition(x: number, y: number): RectSelection;
+  abstract fillText(): void;
 }
 
 export interface Rect {
   startX: number;
   startY: number;
-  selectedPointX?: number;
-  selectedPointY?: number;
   width: number;
   height: number;
   selected?: boolean;
   selectedShape?: RectSelection;
   zIndex?: number;
   isShapeSelected(x: number, y: number): boolean;
+  name?: string;
 };
 
 export class RectShape extends Shape implements Rect {
@@ -61,12 +64,14 @@ export class RectShape extends Shape implements Rect {
     selected: boolean,
     zIndex: number,
     selectedShape?: RectSelection,
+    name?: string,
   ) {
     super(startX, startY, selectedStartX, selectedStartY, zIndex, selected);
     this.ctx = ctx;
     this.width = width;
     this.height = height;
-    this.selectedShape = selectedShape
+    this.selectedShape = selectedShape;
+    this.name = name;
   };
 
   isShapeSelected(x: number, y: number): boolean {
@@ -90,7 +95,7 @@ export class RectShape extends Shape implements Rect {
       this.startY,
       this.width,
       this.height,
-    );
+      );
     this.ctx.stroke();
     this.ctx.save();
   };
@@ -128,22 +133,28 @@ export class RectShape extends Shape implements Rect {
       },
     };
   }
+
+  fillText(): void {
+    if (this.name) {
+      this.ctx.fillStyle = '#3a3a3a';
+      this.ctx.font = "20px Arial";
+      this.ctx.fillText(this.name, (this.startX + this.width / 2) - (this.name.length * 4), this.startY + this.height / 2);
+    }
+  }
 }
 
 export interface Ellipse {
   startX: number;
   startY: number;
-  selectedPointX?: number;
-  selectedPointY?: number;
   width: number;
   height: number;
   centerX: number;
   centerY: number;
   selected?: boolean;
   selectedShape?: EllipseSelection;
-  node?: Path2D;
   zIndex?: number;
   isShapeSelected(x: number, y: number): boolean;
+  name?: string;
 };
 
 export class EllipseShape extends Shape implements Ellipse {
@@ -166,6 +177,7 @@ export class EllipseShape extends Shape implements Ellipse {
     selected: boolean,
     zIndex: number,
     selectedShape?: EllipseSelection,
+    name?: string,
   ) {
     super(startX, startY, selectedStartX, selectedStartY, zIndex, selected);
     this.ctx = ctx;
@@ -174,6 +186,7 @@ export class EllipseShape extends Shape implements Ellipse {
     this.centerX = centerX;
     this.centerY = centerY;
     this.selectedShape = selectedShape;
+    this.name = name;
   };
 
   isShapeSelected(x: number, y: number): boolean {
@@ -233,5 +246,13 @@ export class EllipseShape extends Shape implements Ellipse {
         y: centerY,
       },
     };
+  }
+
+   fillText(): void {
+    if (this.name) {
+      this.ctx.fillStyle = '#3a3a3a';
+      this.ctx.font = "20px Arial";
+      this.ctx.fillText(this.name, this.startX -  this.name.length * 4, this.startY);
+    }
   }
 }
