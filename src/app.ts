@@ -21,10 +21,10 @@ export interface App {
   canvasRect: DOMRect;
   state: State;
   popZIndex: () => number;
-  registerEventListeners: (toolkit: Toolkit, canvas: App) => void;
+  registerEventListeners: (toolkit: Toolkit, app: App) => void;
   unregisterEventListeners: (
     toolkit: Toolkit | undefined,
-    canvas: App
+    app: App
   ) => void;
 }
 
@@ -164,7 +164,7 @@ class AppImpl implements App {
     return this.state.zIndex++;
   }
 
-  registerEventListeners(toolkit: Toolkit, canvas: App) {
+  registerEventListeners(toolkit: Toolkit) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
         this.canvas.addEventListener('mousedown', this.rectangleOnMousedown);
@@ -201,7 +201,7 @@ class AppImpl implements App {
     }
   }
 
-  unregisterEventListeners(toolkit: Toolkit | undefined, canvas: App) {
+  unregisterEventListeners(toolkit: Toolkit | undefined) {
     switch (toolkit) {
       case Toolkit.RECTANGLE:
         this.canvas.removeEventListener('mousedown', this.rectangleOnMousedown);

@@ -32,25 +32,25 @@ export const disableAllSelectedShape = (
   })
 };
 
-export const getRectProps = (e: MouseEvent, canvas: App) => {
-  const mouseX = e.pageX - canvas.canvasRect.left;
-  const mouseY = e.pageY - canvas.canvasRect.top;
-  const width = Math.abs(mouseX - canvas.state.startX);
-  const height = Math.abs(mouseY - canvas.state.startY);
-  const isRight = mouseX >= canvas.state.startX;
-  const isBottom = mouseY > canvas.state.startY;
+export const getRectProps = (e: MouseEvent, app: App) => {
+  const mouseX = e.pageX - app.canvasRect.left;
+  const mouseY = e.pageY - app.canvasRect.top;
+  const width = Math.abs(mouseX - app.state.startX);
+  const height = Math.abs(mouseY - app.state.startY);
+  const isRight = mouseX >= app.state.startX;
+  const isBottom = mouseY > app.state.startY;
   return { mouseX, mouseY, width, height, isRight, isBottom }
 }
 
-export const getEllipseProps = (e: MouseEvent, canvas: App) => {
-  const mouseX = e.pageX - canvas.canvasRect.left;
-  const mouseY = e.pageY - canvas.canvasRect.top;
-  const width = Math.abs(mouseX - canvas.state.startX);
-  const height = Math.abs(mouseY - canvas.state.startY);
+export const getEllipseProps = (e: MouseEvent, app: App) => {
+  const mouseX = e.pageX - app.canvasRect.left;
+  const mouseY = e.pageY - app.canvasRect.top;
+  const width = Math.abs(mouseX - app.state.startX);
+  const height = Math.abs(mouseY - app.state.startY);
   const centerX = mouseX + width / 2;
   const centerY = mouseY + height / 2;
-  const isRight = mouseX >= canvas.state.startX;
-  const isBottom = mouseY > canvas.state.startY;
+  const isRight = mouseX >= app.state.startX;
+  const isBottom = mouseY > app.state.startY;
   return { mouseX, mouseY, width, height, centerX, centerY, isRight, isBottom }
 }
 

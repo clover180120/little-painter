@@ -8,9 +8,9 @@ const tools = [
     listeners: {
       click: () => {
         if (app.state.currentToolkit !== Toolkit.RECTANGLE) {
-          app.unregisterEventListeners(app.state.currentToolkit, app);
+          app.unregisterEventListeners(app.state.currentToolkit);
         }
-        app.registerEventListeners(Toolkit.RECTANGLE, app);
+        app.registerEventListeners(Toolkit.RECTANGLE);
         app.state.currentToolkit = Toolkit.RECTANGLE;
       },
     },
@@ -31,9 +31,9 @@ const tools = [
     listeners: {
       click: () => {
         if (app.state.currentToolkit !== Toolkit.ELLIPSE) {
-          app.unregisterEventListeners(app.state.currentToolkit, app);
+          app.unregisterEventListeners(app.state.currentToolkit);
         }
-        app.registerEventListeners(Toolkit.ELLIPSE, app);
+        app.registerEventListeners(Toolkit.ELLIPSE);
         app.state.currentToolkit = Toolkit.ELLIPSE;
       },
     },
@@ -43,9 +43,9 @@ const tools = [
     listeners: {
       click: () => {
         if (app.state.currentToolkit !== Toolkit.SELECT) {
-          app.unregisterEventListeners(app.state.currentToolkit, app);
+          app.unregisterEventListeners(app.state.currentToolkit);
         }
-        app.registerEventListeners(Toolkit.SELECT, app);
+        app.registerEventListeners(Toolkit.SELECT);
         app.state.currentToolkit = Toolkit.SELECT;
       },
     },
@@ -55,9 +55,9 @@ const tools = [
     listeners: {
       click: () => {
         if (app.state.currentToolkit !== Toolkit.ASSOCIATION) {
-          app.unregisterEventListeners(app.state.currentToolkit, app);
+          app.unregisterEventListeners(app.state.currentToolkit);
         }
-        app.registerEventListeners(Toolkit.ASSOCIATION, app);
+        app.registerEventListeners(Toolkit.ASSOCIATION);
         app.state.currentToolkit = Toolkit.ASSOCIATION;
       },
     },
@@ -67,9 +67,9 @@ const tools = [
     listeners: {
       click: () => {
         if (app.state.currentToolkit !== Toolkit.GENERALIZATION) {
-          app.unregisterEventListeners(app.state.currentToolkit, app);
+          app.unregisterEventListeners(app.state.currentToolkit);
         }
-        app.registerEventListeners(Toolkit.GENERALIZATION, app);
+        app.registerEventListeners(Toolkit.GENERALIZATION);
         app.state.currentToolkit = Toolkit.GENERALIZATION;
       },
     },
@@ -79,9 +79,9 @@ const tools = [
     listeners: {
       click: () => {
         if (app.state.currentToolkit !== Toolkit.COMPOSITION) {
-          app.unregisterEventListeners(app.state.currentToolkit, app);
+          app.unregisterEventListeners(app.state.currentToolkit);
         }
-        app.registerEventListeners(Toolkit.COMPOSITION, app);
+        app.registerEventListeners(Toolkit.COMPOSITION);
         app.state.currentToolkit = Toolkit.COMPOSITION;
       },
     },
