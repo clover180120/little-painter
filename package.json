@@ -7,9 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "start": "tsc -w",
+    "start": "live-server",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npx webpack"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://gitlab.com/kklab-com/vd/0-1-lab/oop-solid-workshop#readme",
   "devDependencies": {
+    "live-server": "^1.2.2",
     "prettier": "^2.6.2",
     "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
