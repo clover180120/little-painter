@@ -1,4 +1,4 @@
-import { ConnectionPorts, EllipseSelection, RectSelection } from './types';
+import { EllipseSelection, RectSelection, SelectedShape } from './types';
 
 export abstract class Shape {
   startX: number;
@@ -38,68 +38,8 @@ export abstract class Shape {
   abstract isShapeSelected(x: number, y: number): boolean;
   abstract draw(): void;
   abstract drawPoints(): void;
-  abstract calcPointsPosition(x: number, y: number): RectSelection;
+  abstract calcPointsPosition(x: number, y: number): SelectedShape;
   abstract fillText(): void;
-}
-
-export abstract class Line {
-  fromShape: Shape;
-  toShape: Shape;
-  ctx: CanvasRenderingContext2D;
-
-  constructor(fromShape: Shape, toShape: Shape, ctx: CanvasRenderingContext2D) {
-    this.fromShape = fromShape;
-    this.toShape = toShape;
-    this.ctx = ctx;
-  }
-  abstract drawLine(): void;
-  findConnectionPort(): ConnectionPorts | null {
-    if (this.fromShape.selectedShape && this.toShape.selectedShape) {
-      let minDistance = Number.MAX_VALUE;
-      let connectionPorts: ConnectionPorts = {
-        from: {x: 0, y: 0},
-        to: {x: 0, y: 0},
-      };
-      for (const fromPoint of Object.values(this.fromShape.selectedShape)) {
-        for (const toPoint of Object.values(this.toShape.selectedShape)) {
-          const xDiff = fromPoint.x - toPoint.x;
-          const yDiff = fromPoint.y - toPoint.y;
-          const dist = Math.sqrt((Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
-          if (dist < minDistance) {
-            minDistance = dist;
-            connectionPorts.from = fromPoint;
-            connectionPorts.to = toPoint;
-          }
-        }
-      }
-      return connectionPorts;
-    }
-    return null;
-  };
-}
-
-export class AssociationLine extends Line {
-  drawLine(): void {
-    const connectionPorts = this.findConnectionPort();
-    if (connectionPorts) {
-      this.ctx.beginPath();
-      this.ctx.moveTo(connectionPorts.from.x, connectionPorts.from.y);
-      this.ctx.lineTo(connectionPorts.to.x, connectionPorts.to.y);
-      this.ctx.stroke();
-    }
-  }
-}
-
-export class GeneralizationLine extends Line {
-   drawLine(): void {
-    
-  }
-}
-
-export class CompositionLine extends Line {
-   drawLine(): void {
-    
-  }
 }
 
 export interface Rect {
@@ -175,23 +115,23 @@ export class RectShape extends Shape implements Rect {
     }
   };
 
-  calcPointsPosition(startX: number, startY: number) {
+  calcPointsPosition(x: number, y: number) {
     return {
       top: {
-        x: startX + this.width / 2,
-        y: startY,
+        x: x + this.width / 2,
+        y,
       },
       bottom: {
-        x: startX + this.width / 2,
-        y: startY + this.height,
+        x: x + this.width / 2,
+        y: y + this.height,
       },
       left: {
-        x: startX,
-        y: startY + this.height / 2,
+        x,
+        y: y + this.height / 2,
       },
       right: {
-        x: startX + this.width,
-        y: startY + this.height / 2,
+        x: x + this.width,
+        y: y + this.height / 2,
       },
     };
   }
@@ -285,23 +225,23 @@ export class EllipseShape extends Shape implements Ellipse {
     }
   };
 
-  calcPointsPosition(centerX: number, centerY: number) {
+  calcPointsPosition(x: number, y: number) {
     return {
       top: {
-        x: centerX,
-        y: centerY - this.height,
+        x,
+        y: y - this.height,
       },
       bottom: {
-        x: centerX,
-        y: centerY + this.height,
+        x,
+        y: y + this.height,
       },
       left: {
-        x: centerX - this.width,
-        y: centerY,
+        x: x - this.width,
+        y,
       },
       right: {
-        x: centerX + this.width,
-        y: centerY,
+        x: x + this.width,
+        y,
       },
     };
   }

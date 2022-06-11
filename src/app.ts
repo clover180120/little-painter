@@ -1,6 +1,7 @@
 import { Toolkit } from "./types";
 import { rectangleEvents, ellipseEvents, selectedEvents, associationEvents, generalizationEvents, compositionEvents } from "./events";
-import { Line, Shape } from "./shapes";
+import { Shape } from "./shapes";
+import { Line } from './lines';
 
 type State = {
   startX: number;

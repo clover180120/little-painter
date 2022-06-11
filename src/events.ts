@@ -1,5 +1,7 @@
 import { App } from "./app";
-import { RectShape, EllipseShape, Shape, Line, AssociationLine } from './shapes';
+import { AssociationLine, CompositionLine, GeneralizationLine, Line } from './lines';
+import { RectShape, EllipseShape, Shape } from './shapes';
+import { Toolkit } from './types';
 import {
   findSelectedShape,
   disableAllSelectedShape,
@@ -68,103 +70,83 @@ const clearCanvas = (app: App) => {
   ctx.clearRect(0, 0, canvasRect.width, canvasRect.height);
 };
 
-const associationEvents: AssociationEvents = {
- onMousedown: (e, app) => {
-    app.state.isDragging = true;
-    const mouseX = e.pageX - app.canvasRect.left;
-    const mouseY = e.pageY - app.canvasRect.top;
-    const shape = findSelectedShape(
-      mouseX,
-      mouseY,
-      app.state.shapeList,
-    );
-    disableAllSelectedShape(app.state.shapeList);
-    if (shape !== null) {
-      shape.selected = true;
+const selectedShapeMouseDown = (e: MouseEvent, app: App) => {
+  app.state.isDragging = true;
+  const mouseX = e.pageX - app.canvasRect.left;
+  const mouseY = e.pageY - app.canvasRect.top;
+  const shape = findSelectedShape(
+    mouseX,
+    mouseY,
+    app.state.shapeList,
+  );
+  disableAllSelectedShape(app.state.shapeList);
+  if (shape !== null) {
+    shape.selected = true;
+  }
+  app.state.shapeList.forEach((shape) => {
+    if (shape.selected) {
+      shape.selectedStartX = mouseX;
+      shape.selectedStartY = mouseY;
     }
-    app.state.shapeList.forEach((shape) => {
-      if (shape.selected) {
-        shape.selectedStartX = mouseX;
-        shape.selectedStartY = mouseY;
-      }
-    });
-    clearCanvas(app);
-    drawAll(app.state.shapeList, app.state.lineList);
-  },
+  });
+  clearCanvas(app);
+  drawAll(app.state.shapeList, app.state.lineList);
+}
 
-  onMouseup: (e, app) => {
-    app.state.isDragging = false;
-    const endX = e.pageX - app.canvasRect.left;
-    const endY = e.pageY - app.canvasRect.top;
-    app.state.shapeList.forEach((shape) => {
-      if (shape.selected) {
-        const fromShape = Object.assign(Object.create(Object.getPrototypeOf(shape)), shape);
-        const offsetX = endX - fromShape.selectedStartX;
-        const offsetY = endY - fromShape.selectedStartY;
-        fromShape.startX += offsetX;
-        fromShape.startY += offsetY;
-        fromShape.selectedShape = fromShape.calcPointsPosition(fromShape.startX, fromShape.startY);
-        const toShape = findOverlay(fromShape, app.state.shapeList);
-        if (toShape && app.ctx) {
-          const line = new AssociationLine(shape, toShape, app.ctx);
-          app.state.lineList.push(line);
+const drawShapeLineMouseUp = (e: MouseEvent, app: App, toolkit: Toolkit) => {
+  app.state.isDragging = false;
+  const endX = e.pageX - app.canvasRect.left;
+  const endY = e.pageY - app.canvasRect.top;
+  app.state.shapeList.forEach((shape) => {
+    if (shape.selected) {
+      const fromShape = Object.assign(Object.create(Object.getPrototypeOf(shape)), shape);
+      const offsetX = endX - fromShape.selectedStartX;
+      const offsetY = endY - fromShape.selectedStartY;
+      fromShape.startX += offsetX;
+      fromShape.startY += offsetY;
+      fromShape.selectedShape = fromShape.calcPointsPosition(fromShape.startX, fromShape.startY);
+      const toShape = findOverlay(fromShape, app.state.shapeList);
+      if (toShape && app.ctx) {
+        switch (toolkit) {
+          case Toolkit.ASSOCIATION:
+            const associationLine = new AssociationLine(shape, toShape, app.ctx);
+            app.state.lineList.push(associationLine);
+            break;
+          case Toolkit.GENERALIZATION:
+            const generalizationLine = new GeneralizationLine(shape, toShape, app.ctx);
+            app.state.lineList.push(generalizationLine);
+            break;
+          case Toolkit.COMPOSITION:
+            const compositionLine = new CompositionLine(shape, toShape, app.ctx);
+            app.state.lineList.push(compositionLine);
+            break;
+          default:
+            break;
         }
       }
-    })
-    clearCanvas(app);
-    drawAll(app.state.shapeList, app.state.lineList);
-  },
-  onMousemove: (e, app) => {
-    if (!app.state.isDragging) return;
-  },
+    }
+  })
+  clearCanvas(app);
+  drawAll(app.state.shapeList, app.state.lineList);
+}
+
+const associationEvents: AssociationEvents = {
+  onMousedown: (e, app) => selectedShapeMouseDown(e, app),
+  onMouseup: (e, app) => drawShapeLineMouseUp(e, app, Toolkit.ASSOCIATION),
+  onMousemove: (e, app) => {}
 }
 const generalizationEvents: GeneralizationEvents = {
-  onMousedown: (e, app) => {
-  
-  },
-  onMousemove: (e, app) => {
-  
-  },
-  onMouseup: (e, app) => {
-  
-  }
+  onMousedown: (e, app) => selectedShapeMouseDown(e, app),
+  onMouseup: (e, app) => drawShapeLineMouseUp(e, app, Toolkit.GENERALIZATION),
+  onMousemove: (e, app) => {}
 }
 const compositionEvents: CompositionEvents = {
-  onMousedown: (e, app) => {
-  
-  },
-  onMousemove: (e, app) => {
-  
-  },
-  onMouseup: (e, app) => {
-  
-  }
+  onMousedown: (e, app) => selectedShapeMouseDown(e, app),
+  onMouseup: (e, app) => drawShapeLineMouseUp(e, app, Toolkit.COMPOSITION),
+  onMousemove: (e, app) => {}
 }
-
 const selectedEvents: SelectedEvents = {
-  onMousedown: (e, app) => {
-    app.state.isDragging = true;
-    const mouseX = e.pageX - app.canvasRect.left;
-    const mouseY = e.pageY - app.canvasRect.top;
-    const shape = findSelectedShape(
-      mouseX,
-      mouseY,
-      app.state.shapeList,
-    );
-    disableAllSelectedShape(app.state.shapeList);
-    if (shape !== null) {
-      shape.selected = true;
-    }
-    app.state.shapeList.forEach((shape) => {
-      if (shape.selected) {
-        shape.selectedStartX = mouseX;
-        shape.selectedStartY = mouseY;
-      }
-    });
-    clearCanvas(app);
-    drawAll(app.state.shapeList, app.state.lineList);
-  },
-
+  onMousedown: (e, app) => selectedShapeMouseDown(e, app),
   onMouseup: (e, app) => {
     app.state.isDragging = false;
     const endX = e.pageX - app.canvasRect.left;
@@ -183,10 +165,24 @@ const selectedEvents: SelectedEvents = {
   },
   onMousemove: (e, app) => {
     if (!app.state.isDragging) return;
-  },
+    app.state.shapeList.forEach((shape) => {
+      if (shape.selected) {
+        const endX = e.pageX - app.canvasRect.left;
+        const endY = e.pageY - app.canvasRect.top;
+        const offsetX = endX - shape.selectedStartX;
+        const offsetY = endY - shape.selectedStartY;
+        shape.startX += offsetX;
+        shape.startY += offsetY;
+        shape.selectedStartX += offsetX;
+        shape.selectedStartY += offsetY;
+        shape.selectedShape = shape.calcPointsPosition(shape.startX, shape.startY);
+      }
+    })
+    clearCanvas(app);
+    drawAll(app.state.shapeList, app.state.lineList);
+  }
 };
 
-  
 const rectangleEvents: RectangleEvents = {
   onMousedown: (e, app) => {
     disableAllSelectedShape(app.state.shapeList);
@@ -262,7 +258,8 @@ const ellipseEvents: EllipseEvents = {
       centerY,
       false,
       app.popZIndex(),
-    )
+    );
+    shape.selectedShape = shape.calcPointsPosition(shape.startX, shape.startY);
     app.state.shapeList.push(shape);
     drawAll(app.state.shapeList, app.state.lineList);
   },
