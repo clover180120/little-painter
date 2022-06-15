@@ -77,18 +77,19 @@ export class CompositionLine extends Line {
     if (connectionPorts) {
       const adx = connectionPorts.to.x - connectionPorts.from.x; 
       const ady = connectionPorts.to.y - connectionPorts.from.y;
-      const middleX = adx * 0.9 + connectionPorts.from.x;
-      const middleY = ady * 0.9 + connectionPorts.from.y;
+      const middleStartX = adx * 0.9 + connectionPorts.from.x;
+      const middleStartY = ady * 0.9 + connectionPorts.from.y;
+      const middleX = adx * 0.95 + connectionPorts.from.x;
+      const middleY = ady * 0.95 + connectionPorts.from.y;
       const tdx = connectionPorts.to.x - middleX;
       const tdy = connectionPorts.to.y - middleY;
       this.ctx.beginPath();
       this.ctx.moveTo(connectionPorts.from.x, connectionPorts.from.y);
-      this.ctx.lineTo(middleX, middleY);
-      this.ctx.moveTo(middleX, middleY);
-      this.ctx.lineTo(middleX + 1 * tdy, middleY + 0.5 * tdx);
-      this.ctx.lineTo(middleX, middleY + 1 * tdy);
-      this.ctx.lineTo(middleX - 1 * tdy, middleY + 0.5 * tdy);
-      this.ctx.closePath();
+      this.ctx.lineTo(middleStartX, middleStartY);
+      this.ctx.lineTo(middleX + 0.5 * tdy, middleY - 0.5 * tdx);
+      this.ctx.lineTo(connectionPorts.to.x, connectionPorts.to.y);
+      this.ctx.lineTo(middleX - 0.5 * tdy, middleY + 0.5 * tdx);
+      this.ctx.lineTo(middleStartX, middleStartY);
       this.ctx.stroke();
     }
   }
