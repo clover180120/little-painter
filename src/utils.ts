@@ -66,3 +66,16 @@ export const findOverlay = (shape: Shape, shapeList: Shape[]): Shape | null => {
   }
   return null;
 }
+
+export const findSelectedShapes = (shape: Shape, app: App, endX: number, endY: number): boolean => {
+  const { startX, startY, width, height } = shape;
+  const minX = Math.min(endX, app.state.startX);
+  const maxX = Math.max(endX, app.state.startX);
+  const minY = Math.min(endY, app.state.startY);
+  const maxY = Math.max(endY, app.state.startY);
+
+  return startX > minX
+    && startX + width < maxX
+    && startY > minY
+    && startY + height < maxY;
+}

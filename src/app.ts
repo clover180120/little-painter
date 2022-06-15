@@ -10,6 +10,7 @@ type State = {
   selectedPointY?: number;
   isDrawing: boolean;
   isDragging: boolean;
+  isSelectingMultiShape: boolean;
   shapeList: Shape[];
   lineList: Line[];
   currentToolkit: Toolkit | undefined;
@@ -46,6 +47,7 @@ class AppImpl implements App {
       selectedPointY: 0,
       isDrawing: false,
       isDragging: false,
+      isSelectingMultiShape: false,
       shapeList: [],
       lineList: [],
       currentToolkit: undefined,
