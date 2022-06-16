@@ -65,7 +65,7 @@ const clearCanvas = (app: App) => {
   ctx.clearRect(0, 0, canvasRect.width, canvasRect.height);
 };
 
-const selectedShapeMouseDown = (e: MouseEvent, app: App) => {
+const drawShapeLineMouseDown = (e: MouseEvent, app: App) => {
   const mouseX = e.pageX - app.canvasRect.left;
   const mouseY = e.pageY - app.canvasRect.top;
   const shape = findSelectedShape(
@@ -127,7 +127,7 @@ const drawShapeLineMouseUp = (e: MouseEvent, app: App, toolkit: Toolkit) => {
 }
 
 const getLineEventsByToolkit = (toolkit: Toolkit): LineEvents => ({
-  onMousedown: (e, app) => selectedShapeMouseDown(e, app),
+  onMousedown: (e, app) => drawShapeLineMouseDown(e, app),
   onMouseup: (e, app) => drawShapeLineMouseUp(e, app, toolkit),
   onMousemove: (e, app) => {}
 })
